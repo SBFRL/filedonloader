@@ -3,19 +3,38 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>资源下载中心</title>
+<title>我的个人主页</title>
 <style>
   :root {
     /* 背景图片：把 bg.jpg 放在同目录，或改成你的图片链接 */
-    --bg-image: url('7d800f3e738f69d46f937ad061b4f5a28f20cb50.jpg');
+    --bg-image: url('bg.jpg');
 
-    --card-bg: rgba(255, 255, 255, 0.78);
-    --card-border: rgba(255, 255, 255, 0.65);
-    --text: #1f2937;
-    --muted: #6b7280;
-    --primary: #2563eb;
-    --primary-hover: #1d4ed8;
-    --shadow: 0 20px 50px rgba(0, 0, 0, 0.18);
+    /* Fluent 强调色 */
+    --accent: #0067c0;
+    --accent-hover: #0078d4;
+    --accent-pressed: #005a9e;
+
+    /* 文本 */
+    --text-primary: #1b1b1b;
+    --text-secondary: #5c5c5c;
+    --text-tertiary: #8a8a8a;
+
+    /* 亚克力层 */
+    --acrylic-bg: rgba(255, 255, 255, 0.72);
+    --acrylic-bg-hover: rgba(255, 255, 255, 0.85);
+    --acrylic-border: rgba(255, 255, 255, 0.6);
+    --acrylic-stroke: rgba(0, 0, 0, 0.06);
+
+    /* 阴影 */
+    --shadow-2: 0 2px 4px rgba(0, 0, 0, 0.04);
+    --shadow-4: 0 2px 8px rgba(0, 0, 0, 0.08);
+    --shadow-8: 0 4px 16px rgba(0, 0, 0, 0.12);
+    --shadow-16: 0 8px 28px rgba(0, 0, 0, 0.16);
+
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
   }
 
   * {
@@ -26,17 +45,19 @@
 
   body {
     min-height: 100vh;
-    font-family: system-ui, -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
-    color: var(--text);
+    font-family: "Segoe UI Variable", "Segoe UI", -apple-system, "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+    color: var(--text-primary);
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 32px 16px;
     position: relative;
     overflow-x: hidden;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
   }
 
-  /* 背景图 */
+  /* 背景图 + Mica 模糊 */
   body::before {
     content: "";
     position: fixed;
@@ -45,84 +66,232 @@
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    filter: blur(2px) saturate(1.1);
+    transform: scale(1.06);
     z-index: -2;
-    transform: scale(1.02);
   }
 
-  /* 背景遮罩，让文字更清晰 */
+  /* Mica 遮罩层：Windows 11 桌面材质感 */
   body::after {
     content: "";
     position: fixed;
     inset: 0;
     background: linear-gradient(
       135deg,
-      rgba(15, 23, 42, 0.58),
-      rgba(15, 23, 42, 0.28)
+      rgba(240, 246, 252, 0.55),
+      rgba(220, 232, 245, 0.35)
     );
     z-index: -1;
   }
 
   .container {
     width: 100%;
-    max-width: 620px;
-    background: var(--card-bg);
-    border: 1px solid var(--card-border);
-    border-radius: 24px;
-    box-shadow: var(--shadow);
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
-    padding: 36px 32px;
+    max-width: 640px;
+    background: var(--acrylic-bg);
+    border: 1px solid var(--acrylic-border);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-16), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(40px) saturate(1.4);
+    -webkit-backdrop-filter: blur(40px) saturate(1.4);
+    padding: 40px 36px;
+    position: relative;
+    overflow: hidden;
   }
 
-  .header {
+  /* 顶部高光条：Fluent 的 Reveal 细节 */
+  .container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.9),
+      transparent
+    );
+  }
+
+  /* ---------- 头像与简介 ---------- */
+  .profile {
     text-align: center;
-    margin-bottom: 28px;
+    margin-bottom: 32px;
   }
 
-  .header h1 {
-    font-size: 28px;
-    letter-spacing: -0.5px;
-    margin-bottom: 8px;
+  .avatar-wrap {
+    position: relative;
+    width: 104px;
+    height: 104px;
+    margin: 0 auto 18px;
   }
 
-  .header p {
-    color: var(--muted);
+  .avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid rgba(255, 255, 255, 0.95);
+    box-shadow: var(--shadow-8);
+    position: relative;
+    z-index: 1;
+  }
+
+  /* 头像底部渐变光晕 */
+  .avatar-wrap::after {
+    content: "";
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    background: radial-gradient(
+      circle at 50% 50%,
+      rgba(0, 120, 212, 0.18),
+      transparent 70%
+    );
+    z-index: 0;
+  }
+
+  .profile h1 {
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: -0.3px;
+    margin-bottom: 6px;
+    color: var(--text-primary);
+  }
+
+  .profile .bio {
     font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.65;
+    max-width: 420px;
+    margin: 0 auto;
   }
 
-  .file-list {
+  /* ---------- 社交链接 ---------- */
+  .links {
     display: flex;
-    flex-direction: column;
-    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 32px;
+  }
+
+  .link-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 18px;
+    border-radius: var(--radius-md);
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid var(--acrylic-stroke);
+    box-shadow: var(--shadow-2);
+    transition: all 0.15s cubic-bezier(0.33, 0, 0.67, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .link-btn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.03);
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+
+  .link-btn:hover {
+    background: var(--acrylic-bg-hover);
+    box-shadow: var(--shadow-4);
+    transform: translateY(-1px);
+  }
+
+  .link-btn:hover::before {
+    opacity: 1;
+  }
+
+  .link-btn:active {
+    transform: translateY(0) scale(0.98);
+    box-shadow: var(--shadow-2);
+  }
+
+  /* ---------- 下载区块 ---------- */
+  .section-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-tertiary);
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-title::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      var(--acrylic-stroke),
+      transparent
+    );
   }
 
   .file-item {
     display: flex;
     align-items: center;
-    gap: 14px;
-    padding: 18px;
-    background: rgba(255, 255, 255, 0.65);
-    border: 1px solid rgba(255, 255, 255, 0.7);
-    border-radius: 16px;
-    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    gap: 16px;
+    padding: 16px 20px;
+    background: rgba(255, 255, 255, 0.55);
+    border: 1px solid var(--acrylic-stroke);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-2);
+    transition: all 0.2s cubic-bezier(0.33, 0, 0.67, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Fluent 强调色左侧指示条，悬停时显现 */
+  .file-item::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%) scaleY(0);
+    width: 3px;
+    height: 60%;
+    background: var(--accent);
+    border-radius: 0 2px 2px 0;
+    transition: transform 0.2s cubic-bezier(0.33, 0, 0.67, 1);
   }
 
   .file-item:hover {
+    background: var(--acrylic-bg-hover);
+    box-shadow: var(--shadow-8);
     transform: translateY(-2px);
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
-    background: rgba(255, 255, 255, 0.88);
+  }
+
+  .file-item:hover::before {
+    transform: translateY(-50%) scaleY(1);
   }
 
   .file-icon {
     width: 48px;
     height: 48px;
-    border-radius: 12px;
-    background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+    border-radius: var(--radius-md);
+    background: linear-gradient(135deg, #e3f0fb, #c9e0f7);
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 24px;
     flex-shrink: 0;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
   }
 
   .file-info {
@@ -131,59 +300,92 @@
   }
 
   .file-name {
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 600;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    color: var(--text-primary);
   }
 
   .file-meta {
-    font-size: 13px;
-    color: var(--muted);
+    font-size: 12.5px;
+    color: var(--text-tertiary);
     margin-top: 4px;
   }
 
+  /* ---------- Fluent 按钮 ---------- */
   .download-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    background: var(--primary);
+    gap: 6px;
+    background: var(--accent);
     color: #fff;
     text-decoration: none;
-    padding: 10px 22px;
-    border-radius: 10px;
-    font-size: 14px;
+    padding: 9px 20px;
+    border-radius: var(--radius-md);
+    font-size: 13.5px;
     font-weight: 600;
     white-space: nowrap;
-    transition: background 0.2s ease, transform 0.2s ease;
+    border: none;
+    box-shadow: var(--shadow-2);
+    transition: all 0.15s cubic-bezier(0.33, 0, 0.67, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .download-btn::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.1);
+    opacity: 0;
+    transition: opacity 0.15s ease;
   }
 
   .download-btn:hover {
-    background: var(--primary-hover);
-    transform: scale(1.03);
+    background: var(--accent-hover);
+    box-shadow: var(--shadow-4);
   }
 
+  .download-btn:hover::after {
+    opacity: 1;
+  }
+
+  .download-btn:active {
+    background: var(--accent-pressed);
+    transform: scale(0.98);
+    box-shadow: none;
+  }
+
+  /* ---------- 页脚 ---------- */
   .footer {
     text-align: center;
-    margin-top: 24px;
+    margin-top: 30px;
     font-size: 12px;
-    color: var(--muted);
+    color: var(--text-tertiary);
   }
 
+  /* ---------- 响应式 ---------- */
   @media (max-width: 520px) {
     .container {
-      padding: 24px 18px;
-      border-radius: 18px;
+      padding: 28px 20px;
+      border-radius: var(--radius-lg);
     }
 
-    .header h1 {
+    .avatar-wrap {
+      width: 84px;
+      height: 84px;
+    }
+
+    .profile h1 {
       font-size: 22px;
     }
 
     .file-item {
-      padding: 14px;
-      gap: 10px;
+      padding: 14px 16px;
+      gap: 12px;
     }
 
     .file-icon {
@@ -197,29 +399,2914 @@
       font-size: 12px;
     }
   }
+
+  /* ---------- 深色主题 ---------- */
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --text-primary: #f5f5f5;
+      --text-secondary: #c7c7c7;
+      --text-tertiary: #9a9a9a;
+
+      --acrylic-bg: rgba(32, 32, 32, 0.72);
+      --acrylic-bg-hover: rgba(50, 50, 50, 0.85);
+      --acrylic-border: rgba(255, 255, 255, 0.08);
+      --acrylic-stroke: rgba(255, 255, 255, 0.08);
+
+      --accent: #4cc2ff;
+      --accent-hover: #6fd0ff;
+      --accent-pressed: #3aa9e0;
+    }
+
+    body::after {
+      background: linear-gradient(
+        135deg,
+        rgba(10, 14, 20, 0.72),
+        rgba(16, 22, 32, 0.6)
+      );
+    }
+
+    .avatar {
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .link-btn {
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .file-item {
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .file-icon {
+      background: linear-gradient(135deg, #1a3a55, #14304a);
+    }
+
+    .download-btn {
+      color: #0a0a0a;
+    }
+  }
 </style>
 </head>
 <body>
 
 <main class="container">
-  <div class="header">
-    <h1>资源下载中心</h1>
-    <p>点击下方按钮即可下载文件</p>
-  </div>
 
-  <div class="file-list">
-    <div class="file-item">
-      <div class="file-icon">📦</div>
-      <div class="file-info">
-        <div class="file-name">课件.pdf</div>
-        <div class="file-meta">ZIP 压缩包 · 12.4 MB</div>
-      </div>
-      <a class="download-btn" href="https://d.tmpfile.link/public/2026-09-28/cc4505bc-ee8d-4301-9134-3e6a38fa5f8e/《乡土中国》推荐——读懂差序格局.pdf" download>下载</a>
+  <!-- 头像与简介 -->
+  <div class="profile">
+    <div class="avatar-wrap">
+      <!-- 换成你的头像：avatar.jpg 或图片链接 -->
+      <img class="avatar" src="avatar.jpg" alt="头像">
     </div>
+    <h1>你的名字</h1>
+    <p class="bio">热爱折腾的小站站长，分享资源与笔记。专注于前端开发、自动化工具与个人效率。</p>
   </div>
 
-  <div class="footer">© 2025 我的下载站 · 文件仅供个人学习使用</div>
-</main>
+  <!-- 社交链接 -->
+  <div class="links">
+    <a class="link-btn" href="https://github.com/你的用户名" target="_blank">🐙 GitHub</a>
+    <a class="link-btn" href="mailto:你的邮箱@example.com">✉️ 邮箱</a>
+    <a class="link-btn" href="https://你的博客地址" target="_blank">📝 博客</a>
+  </div>
 
-</body>
-</html>
+  <!-- 下载区块 -->
+  <p class="section-title">文件下载</p>
+  <div class="file-item">
+    <d<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>我的个人主页</title>
+<style>
+  :root {
+    /* 背景图片：把 bg.jpg 放在同目录，或改成你的图片链接 */
+    --bg-image: url('bg.jpg');
+
+    /* Fluent 强调色 */
+    --accent: #0067c0;
+    --accent-hover: #0078d4;
+    --accent-pressed: #005a9e;
+
+    /* 文本 */
+    --text-primary: #1b1b1b;
+    --text-secondary: #5c5c5c;
+    --text-tertiary: #8a8a8a;
+
+    /* 亚克力层 */
+    --acrylic-bg: rgba(255, 255, 255, 0.72);
+    --acrylic-bg-hover: rgba(255, 255, 255, 0.85);
+    --acrylic-border: rgba(255, 255, 255, 0.6);
+    --acrylic-stroke: rgba(0, 0, 0, 0.06);
+
+    /* 阴影 */
+    --shadow-2: 0 2px 4px rgba(0, 0, 0, 0.04);
+    --shadow-4: 0 2px 8px rgba(0, 0, 0, 0.08);
+    --shadow-8: 0 4px 16px rgba(0, 0, 0, 0.12);
+    --shadow-16: 0 8px 28px rgba(0, 0, 0, 0.16);
+
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    min-height: 100vh;
+    font-family: "Segoe UI Variable", "Segoe UI", -apple-system, "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 16px;
+    position: relative;
+    overflow-x: hidden;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* 背景图 + Mica 模糊 */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image: var(--bg-image);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    filter: blur(2px) saturate(1.1);
+    transform: scale(1.06);
+    z-index: -2;
+  }
+
+  /* Mica 遮罩层：Windows 11 桌面材质感 */
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(
+      135deg,
+      rgba(240, 246, 252, 0.55),
+      rgba(220, 232, 245, 0.35)
+    );
+    z-index: -1;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 640px;
+    background: var(--acrylic-bg);
+    border: 1px solid var(--acrylic-border);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-16), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(40px) saturate(1.4);
+    -webkit-backdrop-filter: blur(40px) saturate(1.4);
+    padding: 40px 36px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* 顶部高光条：Fluent 的 Reveal 细节 */
+  .container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.9),
+      transparent
+    );
+  }
+
+  /* ---------- 头像与简介 ---------- */
+  .profile {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+
+  .avatar-wrap {
+    position: relative;
+    width: 104px;
+    height: 104px;
+    margin: 0 auto 18px;
+  }
+
+  .avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid rgba(255, 255, 255, 0.95);
+    box-shadow: var(--shadow-8);
+    position: relative;
+    z-index: 1;
+  }
+
+  /* 头像底部渐变光晕 */
+  .avatar-wrap::after {
+    content: "";
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    background: radial-gradient(
+      circle at 50% 50%,
+      rgba(0, 120, 212, 0.18),
+      transparent 70%
+    );
+    z-index: 0;
+  }
+
+  .profile h1 {
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: -0.3px;
+    margin-bottom: 6px;
+    color: var(--text-primary);
+  }
+
+  .profile .bio {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.65;
+    max-width: 420px;
+    margin: 0 auto;
+  }
+
+  /* ---------- 社交链接 ---------- */
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 32px;
+  }
+
+  .link-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 18px;
+    border-radius: var(--radius-md);
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid var(--acrylic-stroke);
+    box-shadow: var(--shadow-2);
+    transition: all 0.15s cubic-bezier(0.33, 0, 0.67, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .link-btn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.03);
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+
+  .link-btn:hover {
+    background: var(--acrylic-bg-hover);
+    box-shadow: var(--shadow-4);
+    transform: translateY(-1px);
+  }
+
+  .link-btn:hover::before {
+    opacity: 1;
+  }
+
+  .link-btn:active {
+    transform: translateY(0) scale(0.98);
+    box-shadow: var(--shadow-2);
+  }
+
+  /* ---------- 下载区块 ---------- */
+  .section-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-tertiary);
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-title::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      var(--acrylic-stroke),
+      transparent
+    );
+  }
+
+  .file-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 20px;
+    background: rgba(255, 255, 255, 0.55);
+    border: 1px solid var(--acrylic-stroke);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-2);
+    transition: all 0.2s cubic-bezier(0.33, 0, 0.67, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Fluent 强调色左侧指示条，悬停时显现 */
+  .file-item::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%) scaleY(0);
+    width: 3px;
+    height: 60%;
+    background: var(--accent);
+    border-radius: 0 2px 2px 0;
+    transition: transform 0.2s cubic-bezier(0.33, 0, 0.67, 1);
+  }
+
+  .file-item:hover {
+    background: var(--acrylic-bg-hover);
+    box-shadow: var(--shadow-8);
+    transform: translateY(-2px);
+  }
+
+  .file-item:hover::before {
+    transform: translateY(-50%) scaleY(1);
+  }
+
+  .file-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-md);
+    background: linear-gradient(135deg, #e3f0fb, #c9e0f7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  }
+
+  .file-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .file-name {
+    font-size: 15px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--text-primary);
+  }
+
+  .file-meta {
+    font-size: 12.5px;
+    color: var(--text-tertiary);
+    margin-top: 4px;
+  }
+
+  /* ---------- Fluent 按钮 ---------- */
+  .download-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background: var(--accent);
+    color: #fff;
+    text-decoration: none;
+    padding: 9px 20px;
+    border-radius: var(--radius-md);
+    font-size: 13.5px;
+    font-weight: 600;
+    white-space: nowrap;
+    border: none;
+    box-shadow: var(--shadow-2);
+    transition: all 0.15s cubic-bezier(0.33, 0, 0.67, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .download-btn::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.1);
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+
+  .download-btn:hover {
+    background: var(--accent-hover);
+    box-shadow: var(--shadow-4);
+  }
+
+  .download-btn:hover::after {
+    opacity: 1;
+  }
+
+  .download-btn:active {
+    background: var(--accent-pressed);
+    transform: scale(0.98);
+    box-shadow: none;
+  }
+
+  /* ---------- 页脚 ---------- */
+  .footer {
+    text-align: center;
+    margin-top: 30px;
+    font-size: 12px;
+    color: var(--text-tertiary);
+  }
+
+  /* ---------- 响应式 ---------- */
+  @media (max-width: 520px) {
+    .container {
+      padding: 28px 20px;
+      border-radius: var(--radius-lg);
+    }
+
+    .avatar-wrap {
+      width: 84px;
+      height: 84px;
+    }
+
+    .profile h1 {
+      font-size: 22px;
+    }
+
+    .file-item {
+      padding: 14px 16px;
+      gap: 12px;
+    }
+
+    .file-icon {
+      width: 40px;
+      height: 40px;
+      font-size: 20px;
+    }
+
+    .download-btn {
+      padding: 8px 14px;
+      font-size: 12px;
+    }
+  }
+
+  /* ---------- 深色主题 ---------- */
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --text-primary: #f5f5f5;
+      --text-secondary: #c7c7c7;
+      --text-tertiary: #9a9a9a;
+
+      --acrylic-bg: rgba(32, 32, 32, 0.72);
+      --acrylic-bg-hover: rgba(50, 50, 50, 0.85);
+      --acrylic-border: rgba(255, 255, 255, 0.08);
+      --acrylic-stroke: rgba(255, 255, 255, 0.08);
+
+      --accent: #4cc2ff;
+      --accent-hover: #6fd0ff;
+      --accent-pressed: #3aa9e0;
+    }
+
+    body::after {
+      background: linear-gradient(
+        135deg,
+        rgba(10, 14, 20, 0.72),
+        rgba(16, 22, 32, 0.6)
+      );
+    }
+
+    .avatar {
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .link-btn {
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .file-item {
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .file-icon {
+      background: linear-gradient(135deg, #1a3a55, #14304a);
+    }
+
+    .download-btn {
+      color: #0a0a0a;
+    }
+  }
+</style>
+</head>
+<body>
+
+<main class="container">
+
+  <!-- 头像与简介 -->
+  <div class="profile">
+    <div class="avatar-wrap">
+      <!-- 换成你的头像：avatar.jpg 或图片链接 -->
+      <img class="avatar" src="avatar.jpg" alt="头像">
+    </div>
+    <h1>你的名字</h1>
+    <p class="bio">热爱折腾的小站站长，分享资源与笔记。专注于前端开发、自动化工具与个人效率。</p>
+  </div>
+
+  <!-- 社交链接 -->
+  <div class="links">
+    <a class="link-btn" href="https://github.com/你的用户名" target="_blank">🐙 GitHub</a>
+    <a class="link-btn" href="mailto:你的邮箱@example.com">✉️ 邮箱</a>
+    <a class="link-btn" href="https://你的博客地址" target="_blank">📝 博客</a>
+  </div>
+
+  <!-- 下载区块 -->
+  <p class="section-title">文件下载</p>
+  <div class="file-item">
+    <d<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>我的个人主页</title>
+<style>
+  :root {
+    /* 背景图片：把 bg.jpg 放在同目录，或改成你的图片链接 */
+    --bg-image: url('bg.jpg');
+
+    /* Fluent 强调色 */
+    --accent: #0067c0;
+    --accent-hover: #0078d4;
+    --accent-pressed: #005a9e;
+
+    /* 文本 */
+    --text-primary: #1b1b1b;
+    --text-secondary: #5c5c5c;
+    --text-tertiary: #8a8a8a;
+
+    /* 亚克力层 */
+    --acrylic-bg: rgba(255, 255, 255, 0.72);
+    --acrylic-bg-hover: rgba(255, 255, 255, 0.85);
+    --acrylic-border: rgba(255, 255, 255, 0.6);
+    --acrylic-stroke: rgba(0, 0, 0, 0.06);
+
+    /* 阴影 */
+    --shadow-2: 0 2px 4px rgba(0, 0, 0, 0.04);
+    --shadow-4: 0 2px 8px rgba(0, 0, 0, 0.08);
+    --shadow-8: 0 4px 16px rgba(0, 0, 0, 0.12);
+    --shadow-16: 0 8px 28px rgba(0, 0, 0, 0.16);
+
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    min-height: 100vh;
+    font-family: "Segoe UI Variable", "Segoe UI", -apple-system, "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 16px;
+    position: relative;
+    overflow-x: hidden;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* 背景图 + Mica 模糊 */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image: var(--bg-image);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    filter: blur(2px) saturate(1.1);
+    transform: scale(1.06);
+    z-index: -2;
+  }
+
+  /* Mica 遮罩层：Windows 11 桌面材质感 */
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(
+      135deg,
+      rgba(240, 246, 252, 0.55),
+      rgba(220, 232, 245, 0.35)
+    );
+    z-index: -1;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 640px;
+    background: var(--acrylic-bg);
+    border: 1px solid var(--acrylic-border);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-16), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(40px) saturate(1.4);
+    -webkit-backdrop-filter: blur(40px) saturate(1.4);
+    padding: 40px 36px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* 顶部高光条：Fluent 的 Reveal 细节 */
+  .container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.9),
+      transparent
+    );
+  }
+
+  /* ---------- 头像与简介 ---------- */
+  .profile {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+
+  .avatar-wrap {
+    position: relative;
+    width: 104px;
+    height: 104px;
+    margin: 0 auto 18px;
+  }
+
+  .avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid rgba(255, 255, 255, 0.95);
+    box-shadow: var(--shadow-8);
+    position: relative;
+    z-index: 1;
+  }
+
+  /* 头像底部渐变光晕 */
+  .avatar-wrap::after {
+    content: "";
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    background: radial-gradient(
+      circle at 50% 50%,
+      rgba(0, 120, 212, 0.18),
+      transparent 70%
+    );
+    z-index: 0;
+  }
+
+  .profile h1 {
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: -0.3px;
+    margin-bottom: 6px;
+    color: var(--text-primary);
+  }
+
+  .profile .bio {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.65;
+    max-width: 420px;
+    margin: 0 auto;
+  }
+
+  /* ---------- 社交链接 ---------- */
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 32px;
+  }
+
+  .link-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 18px;
+    border-radius: var(--radius-md);
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid var(--acrylic-stroke);
+    box-shadow: var(--shadow-2);
+    transition: all 0.15s cubic-bezier(0.33, 0, 0.67, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .link-btn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.03);
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+
+  .link-btn:hover {
+    background: var(--acrylic-bg-hover);
+    box-shadow: var(--shadow-4);
+    transform: translateY(-1px);
+  }
+
+  .link-btn:hover::before {
+    opacity: 1;
+  }
+
+  .link-btn:active {
+    transform: translateY(0) scale(0.98);
+    box-shadow: var(--shadow-2);
+  }
+
+  /* ---------- 下载区块 ---------- */
+  .section-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-tertiary);
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-title::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      var(--acrylic-stroke),
+      transparent
+    );
+  }
+
+  .file-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 20px;
+    background: rgba(255, 255, 255, 0.55);
+    border: 1px solid var(--acrylic-stroke);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-2);
+    transition: all 0.2s cubic-bezier(0.33, 0, 0.67, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Fluent 强调色左侧指示条，悬停时显现 */
+  .file-item::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%) scaleY(0);
+    width: 3px;
+    height: 60%;
+    background: var(--accent);
+    border-radius: 0 2px 2px 0;
+    transition: transform 0.2s cubic-bezier(0.33, 0, 0.67, 1);
+  }
+
+  .file-item:hover {
+    background: var(--acrylic-bg-hover);
+    box-shadow: var(--shadow-8);
+    transform: translateY(-2px);
+  }
+
+  .file-item:hover::before {
+    transform: translateY(-50%) scaleY(1);
+  }
+
+  .file-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-md);
+    background: linear-gradient(135deg, #e3f0fb, #c9e0f7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  }
+
+  .file-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .file-name {
+    font-size: 15px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--text-primary);
+  }
+
+  .file-meta {
+    font-size: 12.5px;
+    color: var(--text-tertiary);
+    margin-top: 4px;
+  }
+
+  /* ---------- Fluent 按钮 ---------- */
+  .download-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background: var(--accent);
+    color: #fff;
+    text-decoration: none;
+    padding: 9px 20px;
+    border-radius: var(--radius-md);
+    font-size: 13.5px;
+    font-weight: 600;
+    white-space: nowrap;
+    border: none;
+    box-shadow: var(--shadow-2);
+    transition: all 0.15s cubic-bezier(0.33, 0, 0.67, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .download-btn::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.1);
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+
+  .download-btn:hover {
+    background: var(--accent-hover);
+    box-shadow: var(--shadow-4);
+  }
+
+  .download-btn:hover::after {
+    opacity: 1;
+  }
+
+  .download-btn:active {
+    background: var(--accent-pressed);
+    transform: scale(0.98);
+    box-shadow: none;
+  }
+
+  /* ---------- 页脚 ---------- */
+  .footer {
+    text-align: center;
+    margin-top: 30px;
+    font-size: 12px;
+    color: var(--text-tertiary);
+  }
+
+  /* ---------- 响应式 ---------- */
+  @media (max-width: 520px) {
+    .container {
+      padding: 28px 20px;
+      border-radius: var(--radius-lg);
+    }
+
+    .avatar-wrap {
+      width: 84px;
+      height: 84px;
+    }
+
+    .profile h1 {
+      font-size: 22px;
+    }
+
+    .file-item {
+      padding: 14px 16px;
+      gap: 12px;
+    }
+
+    .file-icon {
+      width: 40px;
+      height: 40px;
+      font-size: 20px;
+    }
+
+    .download-btn {
+      padding: 8px 14px;
+      font-size: 12px;
+    }
+  }
+
+  /* ---------- 深色主题 ---------- */
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --text-primary: #f5f5f5;
+      --text-secondary: #c7c7c7;
+      --text-tertiary: #9a9a9a;
+
+      --acrylic-bg: rgba(32, 32, 32, 0.72);
+      --acrylic-bg-hover: rgba(50, 50, 50, 0.85);
+      --acrylic-border: rgba(255, 255, 255, 0.08);
+      --acrylic-stroke: rgba(255, 255, 255, 0.08);
+
+      --accent: #4cc2ff;
+      --accent-hover: #6fd0ff;
+      --accent-pressed: #3aa9e0;
+    }
+
+    body::after {
+      background: linear-gradient(
+        135deg,
+        rgba(10, 14, 20, 0.72),
+        rgba(16, 22, 32, 0.6)
+      );
+    }
+
+    .avatar {
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .link-btn {
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .file-item {
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .file-icon {
+      background: linear-gradient(135deg, #1a3a55, #14304a);
+    }
+
+    .download-btn {
+      color: #0a0a0a;
+    }
+  }
+</style>
+</head>
+<body>
+
+<main class="container">
+
+  <!-- 头像与简介 -->
+  <div class="profile">
+    <div class="avatar-wrap">
+      <!-- 换成你的头像：avatar.jpg 或图片链接 -->
+      <img class="avatar" src="avatar.jpg" alt="头像">
+    </div>
+    <h1>你的名字</h1>
+    <p class="bio">热爱折腾的小站站长，分享资源与笔记。专注于前端开发、自动化工具与个人效率。</p>
+  </div>
+
+  <!-- 社交链接 -->
+  <div class="links">
+    <a class="link-btn" href="https://github.com/你的用户名" target="_blank">🐙 GitHub</a>
+    <a class="link-btn" href="mailto:你的邮箱@example.com">✉️ 邮箱</a>
+    <a class="link-btn" href="https://你的博客地址" target="_blank">📝 博客</a>
+  </div>
+
+  <!-- 下载区块 -->
+  <p class="section-title">文件下载</p>
+  <div class="file-item">
+    <d<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>我的个人主页</title>
+<style>
+  :root {
+    /* 背景图片：把 bg.jpg 放在同目录，或改成你的图片链接 */
+    --bg-image: url('bg.jpg');
+
+    /* Fluent 强调色 */
+    --accent: #0067c0;
+    --accent-hover: #0078d4;
+    --accent-pressed: #005a9e;
+
+    /* 文本 */
+    --text-primary: #1b1b1b;
+    --text-secondary: #5c5c5c;
+    --text-tertiary: #8a8a8a;
+
+    /* 亚克力层 */
+    --acrylic-bg: rgba(255, 255, 255, 0.72);
+    --acrylic-bg-hover: rgba(255, 255, 255, 0.85);
+    --acrylic-border: rgba(255, 255, 255, 0.6);
+    --acrylic-stroke: rgba(0, 0, 0, 0.06);
+
+    /* 阴影 */
+    --shadow-2: 0 2px 4px rgba(0, 0, 0, 0.04);
+    --shadow-4: 0 2px 8px rgba(0, 0, 0, 0.08);
+    --shadow-8: 0 4px 16px rgba(0, 0, 0, 0.12);
+    --shadow-16: 0 8px 28px rgba(0, 0, 0, 0.16);
+
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    min-height: 100vh;
+    font-family: "Segoe UI Variable", "Segoe UI", -apple-system, "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 16px;
+    position: relative;
+    overflow-x: hidden;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* 背景图 + Mica 模糊 */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image: var(--bg-image);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    filter: blur(2px) saturate(1.1);
+    transform: scale(1.06);
+    z-index: -2;
+  }
+
+  /* Mica 遮罩层：Windows 11 桌面材质感 */
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(
+      135deg,
+      rgba(240, 246, 252, 0.55),
+      rgba(220, 232, 245, 0.35)
+    );
+    z-index: -1;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 640px;
+    background: var(--acrylic-bg);
+    border: 1px solid var(--acrylic-border);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-16), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(40px) saturate(1.4);
+    -webkit-backdrop-filter: blur(40px) saturate(1.4);
+    padding: 40px 36px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* 顶部高光条：Fluent 的 Reveal 细节 */
+  .container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.9),
+      transparent
+    );
+  }
+
+  /* ---------- 头像与简介 ---------- */
+  .profile {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+
+  .avatar-wrap {
+    position: relative;
+    width: 104px;
+    height: 104px;
+    margin: 0 auto 18px;
+  }
+
+  .avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid rgba(255, 255, 255, 0.95);
+    box-shadow: var(--shadow-8);
+    position: relative;
+    z-index: 1;
+  }
+
+  /* 头像底部渐变光晕 */
+  .avatar-wrap::after {
+    content: "";
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    background: radial-gradient(
+      circle at 50% 50%,
+      rgba(0, 120, 212, 0.18),
+      transparent 70%
+    );
+    z-index: 0;
+  }
+
+  .profile h1 {
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: -0.3px;
+    margin-bottom: 6px;
+    color: var(--text-primary);
+  }
+
+  .profile .bio {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.65;
+    max-width: 420px;
+    margin: 0 auto;
+  }
+
+  /* ---------- 社交链接 ---------- */
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 32px;
+  }
+
+  .link-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 18px;
+    border-radius: var(--radius-md);
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid var(--acrylic-stroke);
+    box-shadow: var(--shadow-2);
+    transition: all 0.15s cubic-bezier(0.33, 0, 0.67, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .link-btn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.03);
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+
+  .link-btn:hover {
+    background: var(--acrylic-bg-hover);
+    box-shadow: var(--shadow-4);
+    transform: translateY(-1px);
+  }
+
+  .link-btn:hover::before {
+    opacity: 1;
+  }
+
+  .link-btn:active {
+    transform: translateY(0) scale(0.98);
+    box-shadow: var(--shadow-2);
+  }
+
+  /* ---------- 下载区块 ---------- */
+  .section-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-tertiary);
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-title::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      var(--acrylic-stroke),
+      transparent
+    );
+  }
+
+  .file-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 20px;
+    background: rgba(255, 255, 255, 0.55);
+    border: 1px solid var(--acrylic-stroke);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-2);
+    transition: all 0.2s cubic-bezier(0.33, 0, 0.67, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Fluent 强调色左侧指示条，悬停时显现 */
+  .file-item::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%) scaleY(0);
+    width: 3px;
+    height: 60%;
+    background: var(--accent);
+    border-radius: 0 2px 2px 0;
+    transition: transform 0.2s cubic-bezier(0.33, 0, 0.67, 1);
+  }
+
+  .file-item:hover {
+    background: var(--acrylic-bg-hover);
+    box-shadow: var(--shadow-8);
+    transform: translateY(-2px);
+  }
+
+  .file-item:hover::before {
+    transform: translateY(-50%) scaleY(1);
+  }
+
+  .file-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-md);
+    background: linear-gradient(135deg, #e3f0fb, #c9e0f7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  }
+
+  .file-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .file-name {
+    font-size: 15px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--text-primary);
+  }
+
+  .file-meta {
+    font-size: 12.5px;
+    color: var(--text-tertiary);
+    margin-top: 4px;
+  }
+
+  /* ---------- Fluent 按钮 ---------- */
+  .download-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background: var(--accent);
+    color: #fff;
+    text-decoration: none;
+    padding: 9px 20px;
+    border-radius: var(--radius-md);
+    font-size: 13.5px;
+    font-weight: 600;
+    white-space: nowrap;
+    border: none;
+    box-shadow: var(--shadow-2);
+    transition: all 0.15s cubic-bezier(0.33, 0, 0.67, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .download-btn::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.1);
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+
+  .download-btn:hover {
+    background: var(--accent-hover);
+    box-shadow: var(--shadow-4);
+  }
+
+  .download-btn:hover::after {
+    opacity: 1;
+  }
+
+  .download-btn:active {
+    background: var(--accent-pressed);
+    transform: scale(0.98);
+    box-shadow: none;
+  }
+
+  /* ---------- 页脚 ---------- */
+  .footer {
+    text-align: center;
+    margin-top: 30px;
+    font-size: 12px;
+    color: var(--text-tertiary);
+  }
+
+  /* ---------- 响应式 ---------- */
+  @media (max-width: 520px) {
+    .container {
+      padding: 28px 20px;
+      border-radius: var(--radius-lg);
+    }
+
+    .avatar-wrap {
+      width: 84px;
+      height: 84px;
+    }
+
+    .profile h1 {
+      font-size: 22px;
+    }
+
+    .file-item {
+      padding: 14px 16px;
+      gap: 12px;
+    }
+
+    .file-icon {
+      width: 40px;
+      height: 40px;
+      font-size: 20px;
+    }
+
+    .download-btn {
+      padding: 8px 14px;
+      font-size: 12px;
+    }
+  }
+
+  /* ---------- 深色主题 ---------- */
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --text-primary: #f5f5f5;
+      --text-secondary: #c7c7c7;
+      --text-tertiary: #9a9a9a;
+
+      --acrylic-bg: rgba(32, 32, 32, 0.72);
+      --acrylic-bg-hover: rgba(50, 50, 50, 0.85);
+      --acrylic-border: rgba(255, 255, 255, 0.08);
+      --acrylic-stroke: rgba(255, 255, 255, 0.08);
+
+      --accent: #4cc2ff;
+      --accent-hover: #6fd0ff;
+      --accent-pressed: #3aa9e0;
+    }
+
+    body::after {
+      background: linear-gradient(
+        135deg,
+        rgba(10, 14, 20, 0.72),
+        rgba(16, 22, 32, 0.6)
+      );
+    }
+
+    .avatar {
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .link-btn {
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .file-item {
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .file-icon {
+      background: linear-gradient(135deg, #1a3a55, #14304a);
+    }
+
+    .download-btn {
+      color: #0a0a0a;
+    }
+  }
+</style>
+</head>
+<body>
+
+<main class="container">
+
+  <!-- 头像与简介 -->
+  <div class="profile">
+    <div class="avatar-wrap">
+      <!-- 换成你的头像：avatar.jpg 或图片链接 -->
+      <img class="avatar" src="avatar.jpg" alt="头像">
+    </div>
+    <h1>你的名字</h1>
+    <p class="bio">热爱折腾的小站站长，分享资源与笔记。专注于前端开发、自动化工具与个人效率。</p>
+  </div>
+
+  <!-- 社交链接 -->
+  <div class="links">
+    <a class="link-btn" href="https://github.com/你的用户名" target="_blank">🐙 GitHub</a>
+    <a class="link-btn" href="mailto:你的邮箱@example.com">✉️ 邮箱</a>
+    <a class="link-btn" href="https://你的博客地址" target="_blank">📝 博客</a>
+  </div>
+
+  <!-- 下载区块 -->
+  <p class="section-title">文件下载</p>
+  <div class="file-item">
+    <d<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>我的个人主页</title>
+<style>
+  :root {
+    /* 背景图片：把 bg.jpg 放在同目录，或改成你的图片链接 */
+    --bg-image: url('bg.jpg');
+
+    /* Fluent 强调色 */
+    --accent: #0067c0;
+    --accent-hover: #0078d4;
+    --accent-pressed: #005a9e;
+
+    /* 文本 */
+    --text-primary: #1b1b1b;
+    --text-secondary: #5c5c5c;
+    --text-tertiary: #8a8a8a;
+
+    /* 亚克力层 */
+    --acrylic-bg: rgba(255, 255, 255, 0.72);
+    --acrylic-bg-hover: rgba(255, 255, 255, 0.85);
+    --acrylic-border: rgba(255, 255, 255, 0.6);
+    --acrylic-stroke: rgba(0, 0, 0, 0.06);
+
+    /* 阴影 */
+    --shadow-2: 0 2px 4px rgba(0, 0, 0, 0.04);
+    --shadow-4: 0 2px 8px rgba(0, 0, 0, 0.08);
+    --shadow-8: 0 4px 16px rgba(0, 0, 0, 0.12);
+    --shadow-16: 0 8px 28px rgba(0, 0, 0, 0.16);
+
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    min-height: 100vh;
+    font-family: "Segoe UI Variable", "Segoe UI", -apple-system, "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 16px;
+    position: relative;
+    overflow-x: hidden;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* 背景图 + Mica 模糊 */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image: var(--bg-image);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    filter: blur(2px) saturate(1.1);
+    transform: scale(1.06);
+    z-index: -2;
+  }
+
+  /* Mica 遮罩层：Windows 11 桌面材质感 */
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(
+      135deg,
+      rgba(240, 246, 252, 0.55),
+      rgba(220, 232, 245, 0.35)
+    );
+    z-index: -1;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 640px;
+    background: var(--acrylic-bg);
+    border: 1px solid var(--acrylic-border);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-16), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(40px) saturate(1.4);
+    -webkit-backdrop-filter: blur(40px) saturate(1.4);
+    padding: 40px 36px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* 顶部高光条：Fluent 的 Reveal 细节 */
+  .container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.9),
+      transparent
+    );
+  }
+
+  /* ---------- 头像与简介 ---------- */
+  .profile {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+
+  .avatar-wrap {
+    position: relative;
+    width: 104px;
+    height: 104px;
+    margin: 0 auto 18px;
+  }
+
+  .avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid rgba(255, 255, 255, 0.95);
+    box-shadow: var(--shadow-8);
+    position: relative;
+    z-index: 1;
+  }
+
+  /* 头像底部渐变光晕 */
+  .avatar-wrap::after {
+    content: "";
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    background: radial-gradient(
+      circle at 50% 50%,
+      rgba(0, 120, 212, 0.18),
+      transparent 70%
+    );
+    z-index: 0;
+  }
+
+  .profile h1 {
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: -0.3px;
+    margin-bottom: 6px;
+    color: var(--text-primary);
+  }
+
+  .profile .bio {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.65;
+    max-width: 420px;
+    margin: 0 auto;
+  }
+
+  /* ---------- 社交链接 ---------- */
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 32px;
+  }
+
+  .link-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 18px;
+    border-radius: var(--radius-md);
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid var(--acrylic-stroke);
+    box-shadow: var(--shadow-2);
+    transition: all 0.15s cubic-bezier(0.33, 0, 0.67, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .link-btn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.03);
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+
+  .link-btn:hover {
+    background: var(--acrylic-bg-hover);
+    box-shadow: var(--shadow-4);
+    transform: translateY(-1px);
+  }
+
+  .link-btn:hover::before {
+    opacity: 1;
+  }
+
+  .link-btn:active {
+    transform: translateY(0) scale(0.98);
+    box-shadow: var(--shadow-2);
+  }
+
+  /* ---------- 下载区块 ---------- */
+  .section-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-tertiary);
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-title::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      var(--acrylic-stroke),
+      transparent
+    );
+  }
+
+  .file-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 20px;
+    background: rgba(255, 255, 255, 0.55);
+    border: 1px solid var(--acrylic-stroke);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-2);
+    transition: all 0.2s cubic-bezier(0.33, 0, 0.67, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Fluent 强调色左侧指示条，悬停时显现 */
+  .file-item::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%) scaleY(0);
+    width: 3px;
+    height: 60%;
+    background: var(--accent);
+    border-radius: 0 2px 2px 0;
+    transition: transform 0.2s cubic-bezier(0.33, 0, 0.67, 1);
+  }
+
+  .file-item:hover {
+    background: var(--acrylic-bg-hover);
+    box-shadow: var(--shadow-8);
+    transform: translateY(-2px);
+  }
+
+  .file-item:hover::before {
+    transform: translateY(-50%) scaleY(1);
+  }
+
+  .file-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-md);
+    background: linear-gradient(135deg, #e3f0fb, #c9e0f7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  }
+
+  .file-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .file-name {
+    font-size: 15px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--text-primary);
+  }
+
+  .file-meta {
+    font-size: 12.5px;
+    color: var(--text-tertiary);
+    margin-top: 4px;
+  }
+
+  /* ---------- Fluent 按钮 ---------- */
+  .download-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background: var(--accent);
+    color: #fff;
+    text-decoration: none;
+    padding: 9px 20px;
+    border-radius: var(--radius-md);
+    font-size: 13.5px;
+    font-weight: 600;
+    white-space: nowrap;
+    border: none;
+    box-shadow: var(--shadow-2);
+    transition: all 0.15s cubic-bezier(0.33, 0, 0.67, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .download-btn::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.1);
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+
+  .download-btn:hover {
+    background: var(--accent-hover);
+    box-shadow: var(--shadow-4);
+  }
+
+  .download-btn:hover::after {
+    opacity: 1;
+  }
+
+  .download-btn:active {
+    background: var(--accent-pressed);
+    transform: scale(0.98);
+    box-shadow: none;
+  }
+
+  /* ---------- 页脚 ---------- */
+  .footer {
+    text-align: center;
+    margin-top: 30px;
+    font-size: 12px;
+    color: var(--text-tertiary);
+  }
+
+  /* ---------- 响应式 ---------- */
+  @media (max-width: 520px) {
+    .container {
+      padding: 28px 20px;
+      border-radius: var(--radius-lg);
+    }
+
+    .avatar-wrap {
+      width: 84px;
+      height: 84px;
+    }
+
+    .profile h1 {
+      font-size: 22px;
+    }
+
+    .file-item {
+      padding: 14px 16px;
+      gap: 12px;
+    }
+
+    .file-icon {
+      width: 40px;
+      height: 40px;
+      font-size: 20px;
+    }
+
+    .download-btn {
+      padding: 8px 14px;
+      font-size: 12px;
+    }
+  }
+
+  /* ---------- 深色主题 ---------- */
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --text-primary: #f5f5f5;
+      --text-secondary: #c7c7c7;
+      --text-tertiary: #9a9a9a;
+
+      --acrylic-bg: rgba(32, 32, 32, 0.72);
+      --acrylic-bg-hover: rgba(50, 50, 50, 0.85);
+      --acrylic-border: rgba(255, 255, 255, 0.08);
+      --acrylic-stroke: rgba(255, 255, 255, 0.08);
+
+      --accent: #4cc2ff;
+      --accent-hover: #6fd0ff;
+      --accent-pressed: #3aa9e0;
+    }
+
+    body::after {
+      background: linear-gradient(
+        135deg,
+        rgba(10, 14, 20, 0.72),
+        rgba(16, 22, 32, 0.6)
+      );
+    }
+
+    .avatar {
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .link-btn {
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .file-item {
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .file-icon {
+      background: linear-gradient(135deg, #1a3a55, #14304a);
+    }
+
+    .download-btn {
+      color: #0a0a0a;
+    }
+  }
+</style>
+</head>
+<body>
+
+<main class="container">
+
+  <!-- 头像与简介 -->
+  <div class="profile">
+    <div class="avatar-wrap">
+      <!-- 换成你的头像：avatar.jpg 或图片链接 -->
+      <img class="avatar" src="avatar.jpg" alt="头像">
+    </div>
+    <h1>你的名字</h1>
+    <p class="bio">热爱折腾的小站站长，分享资源与笔记。专注于前端开发、自动化工具与个人效率。</p>
+  </div>
+
+  <!-- 社交链接 -->
+  <div class="links">
+    <a class="link-btn" href="https://github.com/你的用户名" target="_blank">🐙 GitHub</a>
+    <a class="link-btn" href="mailto:你的邮箱@example.com">✉️ 邮箱</a>
+    <a class="link-btn" href="https://你的博客地址" target="_blank">📝 博客</a>
+  </div>
+
+  <!-- 下载区块 -->
+  <p class="section-title">文件下载</p>
+  <div class="file-item">
+    <d<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>我的个人主页</title>
+<style>
+  :root {
+    /* 背景图片：把 bg.jpg 放在同目录，或改成你的图片链接 */
+    --bg-image: url('bg.jpg');
+
+    /* Fluent 强调色 */
+    --accent: #0067c0;
+    --accent-hover: #0078d4;
+    --accent-pressed: #005a9e;
+
+    /* 文本 */
+    --text-primary: #1b1b1b;
+    --text-secondary: #5c5c5c;
+    --text-tertiary: #8a8a8a;
+
+    /* 亚克力层 */
+    --acrylic-bg: rgba(255, 255, 255, 0.72);
+    --acrylic-bg-hover: rgba(255, 255, 255, 0.85);
+    --acrylic-border: rgba(255, 255, 255, 0.6);
+    --acrylic-stroke: rgba(0, 0, 0, 0.06);
+
+    /* 阴影 */
+    --shadow-2: 0 2px 4px rgba(0, 0, 0, 0.04);
+    --shadow-4: 0 2px 8px rgba(0, 0, 0, 0.08);
+    --shadow-8: 0 4px 16px rgba(0, 0, 0, 0.12);
+    --shadow-16: 0 8px 28px rgba(0, 0, 0, 0.16);
+
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    min-height: 100vh;
+    font-family: "Segoe UI Variable", "Segoe UI", -apple-system, "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 16px;
+    position: relative;
+    overflow-x: hidden;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* 背景图 + Mica 模糊 */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image: var(--bg-image);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    filter: blur(2px) saturate(1.1);
+    transform: scale(1.06);
+    z-index: -2;
+  }
+
+  /* Mica 遮罩层：Windows 11 桌面材质感 */
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(
+      135deg,
+      rgba(240, 246, 252, 0.55),
+      rgba(220, 232, 245, 0.35)
+    );
+    z-index: -1;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 640px;
+    background: var(--acrylic-bg);
+    border: 1px solid var(--acrylic-border);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-16), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(40px) saturate(1.4);
+    -webkit-backdrop-filter: blur(40px) saturate(1.4);
+    padding: 40px 36px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* 顶部高光条：Fluent 的 Reveal 细节 */
+  .container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.9),
+      transparent
+    );
+  }
+
+  /* ---------- 头像与简介 ---------- */
+  .profile {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+
+  .avatar-wrap {
+    position: relative;
+    width: 104px;
+    height: 104px;
+    margin: 0 auto 18px;
+  }
+
+  .avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid rgba(255, 255, 255, 0.95);
+    box-shadow: var(--shadow-8);
+    position: relative;
+    z-index: 1;
+  }
+
+  /* 头像底部渐变光晕 */
+  .avatar-wrap::after {
+    content: "";
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    background: radial-gradient(
+      circle at 50% 50%,
+      rgba(0, 120, 212, 0.18),
+      transparent 70%
+    );
+    z-index: 0;
+  }
+
+  .profile h1 {
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: -0.3px;
+    margin-bottom: 6px;
+    color: var(--text-primary);
+  }
+
+  .profile .bio {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.65;
+    max-width: 420px;
+    margin: 0 auto;
+  }
+
+  /* ---------- 社交链接 ---------- */
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 32px;
+  }
+
+  .link-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 18px;
+    border-radius: var(--radius-md);
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid var(--acrylic-stroke);
+    box-shadow: var(--shadow-2);
+    transition: all 0.15s cubic-bezier(0.33, 0, 0.67, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .link-btn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.03);
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+
+  .link-btn:hover {
+    background: var(--acrylic-bg-hover);
+    box-shadow: var(--shadow-4);
+    transform: translateY(-1px);
+  }
+
+  .link-btn:hover::before {
+    opacity: 1;
+  }
+
+  .link-btn:active {
+    transform: translateY(0) scale(0.98);
+    box-shadow: var(--shadow-2);
+  }
+
+  /* ---------- 下载区块 ---------- */
+  .section-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-tertiary);
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-title::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      var(--acrylic-stroke),
+      transparent
+    );
+  }
+
+  .file-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 20px;
+    background: rgba(255, 255, 255, 0.55);
+    border: 1px solid var(--acrylic-stroke);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-2);
+    transition: all 0.2s cubic-bezier(0.33, 0, 0.67, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Fluent 强调色左侧指示条，悬停时显现 */
+  .file-item::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%) scaleY(0);
+    width: 3px;
+    height: 60%;
+    background: var(--accent);
+    border-radius: 0 2px 2px 0;
+    transition: transform 0.2s cubic-bezier(0.33, 0, 0.67, 1);
+  }
+
+  .file-item:hover {
+    background: var(--acrylic-bg-hover);
+    box-shadow: var(--shadow-8);
+    transform: translateY(-2px);
+  }
+
+  .file-item:hover::before {
+    transform: translateY(-50%) scaleY(1);
+  }
+
+  .file-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-md);
+    background: linear-gradient(135deg, #e3f0fb, #c9e0f7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  }
+
+  .file-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .file-name {
+    font-size: 15px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--text-primary);
+  }
+
+  .file-meta {
+    font-size: 12.5px;
+    color: var(--text-tertiary);
+    margin-top: 4px;
+  }
+
+  /* ---------- Fluent 按钮 ---------- */
+  .download-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background: var(--accent);
+    color: #fff;
+    text-decoration: none;
+    padding: 9px 20px;
+    border-radius: var(--radius-md);
+    font-size: 13.5px;
+    font-weight: 600;
+    white-space: nowrap;
+    border: none;
+    box-shadow: var(--shadow-2);
+    transition: all 0.15s cubic-bezier(0.33, 0, 0.67, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .download-btn::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.1);
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+
+  .download-btn:hover {
+    background: var(--accent-hover);
+    box-shadow: var(--shadow-4);
+  }
+
+  .download-btn:hover::after {
+    opacity: 1;
+  }
+
+  .download-btn:active {
+    background: var(--accent-pressed);
+    transform: scale(0.98);
+    box-shadow: none;
+  }
+
+  /* ---------- 页脚 ---------- */
+  .footer {
+    text-align: center;
+    margin-top: 30px;
+    font-size: 12px;
+    color: var(--text-tertiary);
+  }
+
+  /* ---------- 响应式 ---------- */
+  @media (max-width: 520px) {
+    .container {
+      padding: 28px 20px;
+      border-radius: var(--radius-lg);
+    }
+
+    .avatar-wrap {
+      width: 84px;
+      height: 84px;
+    }
+
+    .profile h1 {
+      font-size: 22px;
+    }
+
+    .file-item {
+      padding: 14px 16px;
+      gap: 12px;
+    }
+
+    .file-icon {
+      width: 40px;
+      height: 40px;
+      font-size: 20px;
+    }
+
+    .download-btn {
+      padding: 8px 14px;
+      font-size: 12px;
+    }
+  }
+
+  /* ---------- 深色主题 ---------- */
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --text-primary: #f5f5f5;
+      --text-secondary: #c7c7c7;
+      --text-tertiary: #9a9a9a;
+
+      --acrylic-bg: rgba(32, 32, 32, 0.72);
+      --acrylic-bg-hover: rgba(50, 50, 50, 0.85);
+      --acrylic-border: rgba(255, 255, 255, 0.08);
+      --acrylic-stroke: rgba(255, 255, 255, 0.08);
+
+      --accent: #4cc2ff;
+      --accent-hover: #6fd0ff;
+      --accent-pressed: #3aa9e0;
+    }
+
+    body::after {
+      background: linear-gradient(
+        135deg,
+        rgba(10, 14, 20, 0.72),
+        rgba(16, 22, 32, 0.6)
+      );
+    }
+
+    .avatar {
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .link-btn {
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .file-item {
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .file-icon {
+      background: linear-gradient(135deg, #1a3a55, #14304a);
+    }
+
+    .download-btn {
+      color: #0a0a0a;
+    }
+  }
+</style>
+</head>
+<body>
+
+<main class="container">
+
+  <!-- 头像与简介 -->
+  <div class="profile">
+    <div class="avatar-wrap">
+      <!-- 换成你的头像：avatar.jpg 或图片链接 -->
+      <img class="avatar" src="avatar.jpg" alt="头像">
+    </div>
+    <h1>你的名字</h1>
+    <p class="bio">热爱折腾的小站站长，分享资源与笔记。专注于前端开发、自动化工具与个人效率。</p>
+  </div>
+
+  <!-- 社交链接 -->
+  <div class="links">
+    <a class="link-btn" href="https://github.com/你的用户名" target="_blank">🐙 GitHub</a>
+    <a class="link-btn" href="mailto:你的邮箱@example.com">✉️ 邮箱</a>
+    <a class="link-btn" href="https://你的博客地址" target="_blank">📝 博客</a>
+  </div>
+
+  <!-- 下载区块 -->
+  <p class="section-title">文件下载</p>
+  <div class="file-item">
+    <d<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>我的个人主页</title>
+<style>
+  :root {
+    /* 背景图片：把 bg.jpg 放在同目录，或改成你的图片链接 */
+    --bg-image: url('bg.jpg');
+
+    /* Fluent 强调色 */
+    --accent: #0067c0;
+    --accent-hover: #0078d4;
+    --accent-pressed: #005a9e;
+
+    /* 文本 */
+    --text-primary: #1b1b1b;
+    --text-secondary: #5c5c5c;
+    --text-tertiary: #8a8a8a;
+
+    /* 亚克力层 */
+    --acrylic-bg: rgba(255, 255, 255, 0.72);
+    --acrylic-bg-hover: rgba(255, 255, 255, 0.85);
+    --acrylic-border: rgba(255, 255, 255, 0.6);
+    --acrylic-stroke: rgba(0, 0, 0, 0.06);
+
+    /* 阴影 */
+    --shadow-2: 0 2px 4px rgba(0, 0, 0, 0.04);
+    --shadow-4: 0 2px 8px rgba(0, 0, 0, 0.08);
+    --shadow-8: 0 4px 16px rgba(0, 0, 0, 0.12);
+    --shadow-16: 0 8px 28px rgba(0, 0, 0, 0.16);
+
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    min-height: 100vh;
+    font-family: "Segoe UI Variable", "Segoe UI", -apple-system, "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 16px;
+    position: relative;
+    overflow-x: hidden;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* 背景图 + Mica 模糊 */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image: var(--bg-image);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    filter: blur(2px) saturate(1.1);
+    transform: scale(1.06);
+    z-index: -2;
+  }
+
+  /* Mica 遮罩层：Windows 11 桌面材质感 */
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(
+      135deg,
+      rgba(240, 246, 252, 0.55),
+      rgba(220, 232, 245, 0.35)
+    );
+    z-index: -1;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 640px;
+    background: var(--acrylic-bg);
+    border: 1px solid var(--acrylic-border);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-16), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(40px) saturate(1.4);
+    -webkit-backdrop-filter: blur(40px) saturate(1.4);
+    padding: 40px 36px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* 顶部高光条：Fluent 的 Reveal 细节 */
+  .container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.9),
+      transparent
+    );
+  }
+
+  /* ---------- 头像与简介 ---------- */
+  .profile {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+
+  .avatar-wrap {
+    position: relative;
+    width: 104px;
+    height: 104px;
+    margin: 0 auto 18px;
+  }
+
+  .avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid rgba(255, 255, 255, 0.95);
+    box-shadow: var(--shadow-8);
+    position: relative;
+    z-index: 1;
+  }
+
+  /* 头像底部渐变光晕 */
+  .avatar-wrap::after {
+    content: "";
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    background: radial-gradient(
+      circle at 50% 50%,
+      rgba(0, 120, 212, 0.18),
+      transparent 70%
+    );
+    z-index: 0;
+  }
+
+  .profile h1 {
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: -0.3px;
+    margin-bottom: 6px;
+    color: var(--text-primary);
+  }
+
+  .profile .bio {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.65;
+    max-width: 420px;
+    margin: 0 auto;
+  }
+
+  /* ---------- 社交链接 ---------- */
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 32px;
+  }
+
+  .link-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 18px;
+    border-radius: var(--radius-md);
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid var(--acrylic-stroke);
+    box-shadow: var(--shadow-2);
+    transition: all 0.15s cubic-bezier(0.33, 0, 0.67, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .link-btn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.03);
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+
+  .link-btn:hover {
+    background: var(--acrylic-bg-hover);
+    box-shadow: var(--shadow-4);
+    transform: translateY(-1px);
+  }
+
+  .link-btn:hover::before {
+    opacity: 1;
+  }
+
+  .link-btn:active {
+    transform: translateY(0) scale(0.98);
+    box-shadow: var(--shadow-2);
+  }
+
+  /* ---------- 下载区块 ---------- */
+  .section-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-tertiary);
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-title::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      var(--acrylic-stroke),
+      transparent
+    );
+  }
+
+  .file-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 20px;
+    background: rgba(255, 255, 255, 0.55);
+    border: 1px solid var(--acrylic-stroke);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-2);
+    transition: all 0.2s cubic-bezier(0.33, 0, 0.67, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Fluent 强调色左侧指示条，悬停时显现 */
+  .file-item::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%) scaleY(0);
+    width: 3px;
+    height: 60%;
+    background: var(--accent);
+    border-radius: 0 2px 2px 0;
+    transition: transform 0.2s cubic-bezier(0.33, 0, 0.67, 1);
+  }
+
+  .file-item:hover {
+    background: var(--acrylic-bg-hover);
+    box-shadow: var(--shadow-8);
+    transform: translateY(-2px);
+  }
+
+  .file-item:hover::before {
+    transform: translateY(-50%) scaleY(1);
+  }
+
+  .file-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-md);
+    background: linear-gradient(135deg, #e3f0fb, #c9e0f7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  }
+
+  .file-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .file-name {
+    font-size: 15px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--text-primary);
+  }
+
+  .file-meta {
+    font-size: 12.5px;
+    color: var(--text-tertiary);
+    margin-top: 4px;
+  }
+
+  /* ---------- Fluent 按钮 ---------- */
+  .download-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background: var(--accent);
+    color: #fff;
+    text-decoration: none;
+    padding: 9px 20px;
+    border-radius: var(--radius-md);
+    font-size: 13.5px;
+    font-weight: 600;
+    white-space: nowrap;
+    border: none;
+    box-shadow: var(--shadow-2);
+    transition: all 0.15s cubic-bezier(0.33, 0, 0.67, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .download-btn::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.1);
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+
+  .download-btn:hover {
+    background: var(--accent-hover);
+    box-shadow: var(--shadow-4);
+  }
+
+  .download-btn:hover::after {
+    opacity: 1;
+  }
+
+  .download-btn:active {
+    background: var(--accent-pressed);
+    transform: scale(0.98);
+    box-shadow: none;
+  }
+
+  /* ---------- 页脚 ---------- */
+  .footer {
+    text-align: center;
+    margin-top: 30px;
+    font-size: 12px;
+    color: var(--text-tertiary);
+  }
+
+  /* ---------- 响应式 ---------- */
+  @media (max-width: 520px) {
+    .container {
+      padding: 28px 20px;
+      border-radius: var(--radius-lg);
+    }
+
+    .avatar-wrap {
+      width: 84px;
+      height: 84px;
+    }
+
+    .profile h1 {
+      font-size: 22px;
+    }
+
+    .file-item {
+      padding: 14px 16px;
+      gap: 12px;
+    }
+
+    .file-icon {
+      width: 40px;
+      height: 40px;
+      font-size: 20px;
+    }
+
+    .download-btn {
+      padding: 8px 14px;
+      font-size: 12px;
+    }
+  }
+
+  /* ---------- 深色主题 ---------- */
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --text-primary: #f5f5f5;
+      --text-secondary: #c7c7c7;
+      --text-tertiary: #9a9a9a;
+
+      --acrylic-bg: rgba(32, 32, 32, 0.72);
+      --acrylic-bg-hover: rgba(50, 50, 50, 0.85);
+      --acrylic-border: rgba(255, 255, 255, 0.08);
+      --acrylic-stroke: rgba(255, 255, 255, 0.08);
+
+      --accent: #4cc2ff;
+      --accent-hover: #6fd0ff;
+      --accent-pressed: #3aa9e0;
+    }
+
+    body::after {
+      background: linear-gradient(
+        135deg,
+        rgba(10, 14, 20, 0.72),
+        rgba(16, 22, 32, 0.6)
+      );
+    }
+
+    .avatar {
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .link-btn {
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .file-item {
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .file-icon {
+      background: linear-gradient(135deg, #1a3a55, #14304a);
+    }
+
+    .download-btn {
+      color: #0a0a0a;
+    }
+  }
+</style>
+</head>
+<body>
+
+<main class="container">
+
+  <!-- 头像与简介 -->
+  <div class="profile">
+    <div class="avatar-wrap">
+      <!-- 换成你的头像：avatar.jpg 或图片链接 -->
+      <img class="avatar" src="avatar.jpg" alt="头像">
+    </div>
+    <h1>你的名字</h1>
+    <p class="bio">热爱折腾的小站站长，分享资源与笔记。专注于前端开发、自动化工具与个人效率。</p>
+  </div>
+
+  <!-- 社交链接 -->
+  <div class="links">
+    <a class="link-btn" href="https://github.com/你的用户名" target="_blank">🐙 GitHub</a>
+    <a class="link-btn" href="mailto:你的邮箱@example.com">✉️ 邮箱</a>
+    <a class="link-btn" href="https://你的博客地址" target="_blank">📝 博客</a>
+  </div>
+
+  <!-- 下载区块 -->
+  <p class="section-title">文件下载</p>
+  <div class="file-item">
+    <d
